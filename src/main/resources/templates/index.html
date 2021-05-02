@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="/common/common-js.js" type="application/javascript"></script>
+
+    <style>
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+            min-height: 400px;
+        }
+
+        .el-input__inner {
+            border-radius: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-row>
+            <el-col :span="4">
+                <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+                    <el-radio-button :label="false">展开</el-radio-button>
+                    <el-radio-button :label="true">收起</el-radio-button>
+                </el-radio-group> -->
+                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                    :collapse="isCollapse">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span slot="title">导航一</span>
+                        </template>
+                        <el-menu-item-group>
+                            <span slot="title">分组一</span>
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="分组2">
+                            <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <span slot="title">选项4</span>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">导航二</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">导航三</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+
+            <el-col :span="12" style="text-align: center; padding-top: auto;">
+                <el-autocomplete v-model="state" :fetch-suggestions="querySearchAsync" placeholder="请输入内容"
+                    @select="handleSelect">
+                </el-autocomplete>
+            </el-col>
+
+            <el-col :span="8">
+                <el-container>
+                    <el-header>
+                        <el-dropdown size="mini" split-button type="primary">
+                            Host
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>ip001</el-dropdown-item>
+                                <el-dropdown-item>ip002</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-header>
+                    <el-main>
+                        <div id="terminal"></div>
+                    </el-main>
+                </el-container>
+            </el-col>
+        </el-row>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                isCollapse: true,
+                restaurants: [],
+                state: '',
+                timeout: null
+            },
+            methods: {
+                handleOpen(key, keyPath) {
+                    console.log(key, keyPath);
+                },
+                handleClose(key, keyPath) {
+                    console.log(key, keyPath);
+                },
+                loadAll() {
+                    return [
+                        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
+                        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
+                        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+                        { "value": "泷千家(天山西路店)", "address": "天山西路438号" }
+                    ];
+
+                },
+                querySearchAsync(queryString, cb) {
+                    var restaurants = this.restaurants;
+                    var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+                    clearTimeout(this.timeout);
+                    this.timeout = setTimeout(() => {
+                        cb(results);
+                    }, 1000 * Math.random());
+                },
+                createStateFilter(queryString) {
+                    return (state) => {
+                        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                    };
+                },
+                handleSelect(item) {
+                    console.log(item);
+                },
+
+                initXterm() {
+                    var term = new Terminal();
+                    term.open(document.getElementById('terminal'));
+                    term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+                }
+            },
+            mounted: function () {
+                this.initXterm()
+                this.restaurants = this.loadAll()
+            }
+        })
+    </script>
+</body>
+
+</html>
